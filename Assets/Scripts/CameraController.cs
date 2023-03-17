@@ -42,6 +42,7 @@ public class CameraController : MonoBehaviour
     public void BeginChase(Transform target)
     {
         cameraMode = CameraMode.None;
+        
         lookAt = target;
         follow = target;
         cameraHeight = 7f;

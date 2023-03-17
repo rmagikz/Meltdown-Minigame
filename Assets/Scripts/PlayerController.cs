@@ -9,9 +9,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce;
     [SerializeField] private float airSpeed;
 
-    private float horizontal, vertical;
+    private float mouseX, vertical;
     private float playerRotation;
-    private float airSpeedMod;
     private bool jumping;
     private bool crouching;
 
@@ -22,18 +21,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         paused = true;
-
-        airSpeedMod = 1;
-    }
-
-    public void ToggleController()
-    {
-        paused = !paused;
-    }
-
-    public void SetSensitivity(float value)
-    {
-        sensitivity = value;
     }
 
     void Update()
@@ -45,10 +32,10 @@ public class PlayerController : MonoBehaviour
 
         if (paused) return;
 
-        horizontal= Input.GetAxisRaw("Mouse X");
+        mouseX= Input.GetAxisRaw("Mouse X");
         vertical = Input.GetAxisRaw("Vertical");
 
-        gameObject.transform.Rotate(new Vector3(0,horizontal * sensitivity,0));
+        gameObject.transform.Rotate(new Vector3(0,mouseX * sensitivity,0));
 
         if (vertical == 0 || crouching)
             animator.SetBool("Running", false);
@@ -60,7 +47,6 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 jumping = true;
-                airSpeedMod = airSpeed;
                 animator.SetBool("Running", false);
             }
 
@@ -81,19 +67,27 @@ public class PlayerController : MonoBehaviour
         ProcessMove();
     }
 
+    public void ToggleController()
+    {
+        paused = !paused;
+    }
+
+    public void SetSensitivity(float value)
+    {
+        sensitivity = value;
+    }
+
     private void ProcessMove()
     {
         if (crouching) return;
 
-        Vector3 direction = (transform.position - Camera.main.transform.position).normalized;
-        
-        Vector3 velocity = direction * vertical * (moveSpeed * airSpeedMod) * Time.deltaTime;
+        Vector3 forwardDirection = (transform.position - Camera.main.transform.position).normalized; 
+        Vector3 velocity = forwardDirection * vertical * (moveSpeed) * Time.deltaTime;
         rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
 
         if (jumping)
         {
             rb.AddForce(new Vector3(0,jumpForce,0), ForceMode.Impulse);
-            airSpeedMod = 1;
             jumping = false;
         }
     }

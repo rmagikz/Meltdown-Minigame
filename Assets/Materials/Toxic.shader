@@ -5,6 +5,7 @@ Shader "Test/Toxic"
         _MainTex ("Texture", 2D) = "white" {}
         _BaseColor ("Base Color", Color) = (1,1,1,1)
         _RippleColor ("Ripple Color", Color) = (1,1,1,1)
+        _TextureOpacity ("Texture Opacity", Float) = 1.0
     }
     SubShader
     {
@@ -17,6 +18,7 @@ Shader "Test/Toxic"
         CBUFFER_START(UnityPerMaterial)
             float4 _BaseColor;
             float4 _RippleColor;
+            float _TextureOpacity;
         CBUFFER_END
 
         TEXTURE2D(_MainTex);
@@ -64,10 +66,10 @@ Shader "Test/Toxic"
                 float4 baseTex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
 
                 //float2 uv = (2.0 * i.uv - _ScreenParams.xy)/_ScreenParams.y;
-                float2 uv = i.uv;
+                float2 uv = (i.uv - 0.5) * 2;
                 
                 float m = 0.;
-                float t = _Time.y;
+                float t = _Time.y * 1.2;
 
                 float minDist = 100;
 
@@ -83,7 +85,7 @@ Shader "Test/Toxic"
                         minDist = d;
                 }
                 
-                return baseTex * (_BaseColor + _RippleColor * minDist);
+                return baseTex * 1-_TextureOpacity * (_BaseColor + _RippleColor * minDist);
             }
 
             ENDHLSL

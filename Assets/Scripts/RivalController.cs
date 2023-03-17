@@ -12,7 +12,7 @@ public class RivalController : MonoBehaviour
     [SerializeField] BoxCollider triggerCollider;
     [SerializeField] BoxCollider boxCollider;
 
-    [SerializeField] float successRate;
+    //[SerializeField] float successRate;
 
     [SerializeField] float jumpForce;
 
@@ -63,7 +63,7 @@ public class RivalController : MonoBehaviour
     {
         if (!canAct) return;
 
-        if (Random.value * 100f > successRate) return;
+        //if (Random.value * 100f > successRate) return;
 
         if (collider.gameObject.transform == stickHigh)
         {
